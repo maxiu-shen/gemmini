@@ -1,0 +1,57 @@
+# Walkthrough: 手工 Gemmini 卷积示例（2输出通道）
+
+## 变更概述
+
+基于已有的 [shen_test_conv_manual.c](file:///home/project/chipyard/generators/gemmini/software/gemmini-rocc-tests/bareMetalC/shen_test_conv_manual.c)（1输出通道），创建了支持 **2 输出通道** 的手工 Gemmini 卷积示例 [shen_test_conv_manual_2ch.c](file:///home/project/chipyard/generators/gemmini/software/gemmini-rocc-tests/bareMetalC/shen_test_conv_manual_2ch.c)。
+
+### 修改的文件
+
+| 文件 | 操作 | 说明 |
+|------|------|------|
+| [shen_test_conv_manual_2ch.c](file:///home/project/chipyard/generators/gemmini/software/gemmini-rocc-tests/bareMetalC/shen_test_conv_manual_2ch.c) | 新建 | 2输出通道手工卷积示例 |
+| [Makefile](file:///home/project/chipyard/generators/gemmini/software/gemmini-rocc-tests/bareMetalC/Makefile) | 修改 | 注册新测试 |
+
+## 源码研究
+
+分析了 Gemmini 卷积实现的调用链路：
+
+```mermaid
+graph TD
+    A["tiled_conv_auto"] --> B["tiled_conv_stride_auto"]
+    B --> C["tiled_conv（多层循环分块）"]
+    C --> D["sp_tiled_conv（底层指令）"]
+    D --> E["gemmini_loop_conv_ws"]
+```
+
+核心思路：**im2col** 将卷积转为矩阵乘法，再用脉动阵列计算。
+
+## 实现细节
+
+### 卷积参数
+- **Input**: `[1][4][4][3]` → im2col 后 `input_mat[4×27]`
+- **Weight**: `[2][3][3][3]` → flatten 后 `weight_mat[27×2]`
+- **Output**: `[1][2][2][2]` → `output_mat[4×2]`
+
+### K 维分块（PATCH_SIZE=27 > DIM=16）
+- **K0=16, K1=11**
+- Step1: `C = A0 × B0`（覆盖写 accumulator）
+- Step2: `C += A1 × B1`（累加到 accumulator）
+
+## 验证结果
+
+编译成功，Spike 仿真 **PASSED**：
+
+```
+CPU gold 输出:
+  通道 0: [81, 108, 108, 127]
+  通道 1: [127, 127, 127, 127]
+
+Gemmini 输出:
+  通道 0: [81, 108, 108, 127]
+  通道 1: [127, 127, 127, 127]
+
+PASSED: Gemmini 卷积结果与 CPU gold 完全一致!
+```
+
+> [!NOTE]
+> 通道 1 的值全为 127 是因为权重使用递增值（1~9），乘积累加超过 127 后被饱和截断。这是正确行为。

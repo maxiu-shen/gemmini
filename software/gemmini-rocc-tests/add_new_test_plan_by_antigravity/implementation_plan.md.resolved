@@ -1,0 +1,66 @@
+# 手动实现 Gemmini 卷积示例
+
+## 背景
+
+Gemmini 通过 [tiled_conv_auto](file:///home/project/chipyard/generators/gemmini/software/gemmini-rocc-tests/include/gemmini.h#2861-2895) API 执行卷积操作。其底层原理是将卷积转为矩阵乘法（im2col 方式）：
+
+```
+卷积: Output[batch][orow][ocol][och] = sum(Input[...] * Weight[...]) + Bias[och]
+
+等价矩阵乘法: im2col_Input[N_PATCHES × PATCH_SIZE] × Weight_mat[PATCH_SIZE × OUT_CHANNELS] = Output_mat[N_PATCHES × OUT_CHANNELS]
+```
+
+用户要求像 [shenweilong_test_ws_tiled.c](file:///home/project/chipyard/generators/gemmini/software/gemmini-rocc-tests/bareMetalC/shenweilong_test_ws_tiled.c)（手动 `mvin`/`preload`/`compute`/`mvout`）那样，用低层指令手工实现一个简单卷积。
+
+## 设计方案
+
+为了保持代码简单且易于理解，选择一个能完全放入 Gemmini scratchpad 的小卷积场景：
+
+| 参数 | 值 | 说明 |
+|------|-----|------|
+| batch_size | 1 | 单张图 |
+| in_row_dim / in_col_dim | 4×4 | 小输入 |
+| in_channels | 1 | 单通道 |
+| out_channels | 1 | 单输出通道 |
+| kernel_dim | 3 | 3×3 卷积核 |
+| stride | 1 | 步长 1 |
+| padding | 0 | 无填充 |
+| out_row_dim / out_col_dim | 2×2 | (4-3)/1+1=2 |
+
+手动操作步骤：
+1. **CPU 端 im2col**：将 input[4×4] 按 3×3 窗口展开为 `input_mat[4 × 9]`（4个patch，每个 patch 9 个元素）
+2. **CPU 端 flatten weights**：将 weight[1][3][3][1] 转置为 `weight_mat[9 × 1]`
+3. **mvin** `input_mat` 和 `weight_mat` 到 scratchpad
+4. **preload + compute** 执行矩阵乘法 `input_mat × weight_mat = output_mat[4 × 1]`
+5. **mvout** 结果到主存
+6. **CPU 验证**与直接卷积的结果对比
+
+> [!IMPORTANT]
+> 由 `PATCH_SIZE=9` 和 `N_PATCHES=4` 都小于 `DIM=16`，所以只需一次 `preload`/`compute` 即可完成，无需分块。
+
+## 文件变更
+
+### [NEW] [shen_test_conv_manual.c](file:///home/project/chipyard/generators/gemmini/software/gemmini-rocc-tests/bareMetalC/shen_test_conv_manual.c)
+
+新建手动卷积示例文件，包含：
+- CPU 端 im2col 展开函数
+- CPU 端 flatten_weights 函数
+- CPU 端直接卷积作为 gold 参考
+- 使用 `gemmini_mvin`/`gemmini_preload`/`gemmini_compute_preloaded`/`gemmini_mvout` 的手工卷积实现
+- 结果对比验证
+
+### [MODIFY] [Makefile](file:///home/project/chipyard/generators/gemmini/software/gemmini-rocc-tests/bareMetalC/Makefile)
+
+在 `tests` 列表中注册 `shen_test_conv_manual`。
+
+## 验证计划
+
+### 自动验证
+```bash
+source /home/project/chipyard/env.sh
+cd /home/project/chipyard/generators/gemmini/software/gemmini-rocc-tests
+./build.sh
+spike --extension=gemmini build/bareMetalC/shen_test_conv_manual-baremetal
+```
+
+预期输出：程序打印 CPU gold 结果和 Gemmini 结果一致的消息，`exit(0)` 退出。
