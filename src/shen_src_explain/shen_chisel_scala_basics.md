@@ -53,6 +53,71 @@ object A {
 - `A.make()` 可以
 - `A.x` 不可以，因为 `x` 不在 `object A` 里，而在 `class A` 的实例里
 
+### 1.1.1 `val` 的 3 个速记点
+
+**`val` = 不可重新赋值的名字绑定。**
+
+1. `val` 不一定是编译期常量，只是这个名字不能再指向别的东西。
+
+```scala
+val x = 5
+val raw_cmd = raw_cmd_q.io.deq
+```
+
+2. `val x = ...` 常常省略类型，交给编译器自动推断。
+
+```scala
+val raw_cmd = raw_cmd_q.io.deq
+```
+
+可以脑补成：
+
+```scala
+val raw_cmd: 某个具体类型 = raw_cmd_q.io.deq
+```
+
+3. 构造参数前加 `val`，表示它会自动变成对象字段。
+
+```scala
+class A(x: Int)      // x 只是构造参数
+class B(val x: Int)  // x 既是构造参数，也是成员字段
+```
+
+所以 `class Gemmini(val config: ...)` 里的 `config`，后面可以在类里反复直接使用。
+
+### 1.1.2 `object` 的 3 个速记点
+
+1. `object A` 是**单例对象**，不是 `class A` 的某个实例。
+
+```scala
+object A
+```
+
+表示全局只有一个 `A`。
+
+2. `class A` 和 `object A` 可以同名，这叫**伴生类 / 伴生对象**。
+
+- `class A`：定义实例长什么样
+- `object A`：放和这个类强相关的工具函数、工厂入口
+
+3. 如果 `object A` 里定义了 `apply(...)`，就可以直接写 `A(...)`。
+
+```scala
+object A {
+  def apply(x: Int) = x + 1
+}
+
+A(3)   // 等价于 A.apply(3)
+```
+
+所以在 Chisel 里看到：
+
+```scala
+LoopConv(raw_cmd, ...)
+```
+
+通常要想到：这很可能是在调用 `object LoopConv` 的 `apply(...)`，而不是直接在写 `new LoopConv(...)`。
+
 ### 1.2 用 `LocalAddr.scala` 里的例子理解
 
 `LocalAddr.scala` 里有两部分：
