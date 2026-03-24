@@ -1,0 +1,11 @@
+/* 由 tools/shen_gen_b1c9c847_assets.py 自 JPEG 生成，勿手改 */
+#ifndef SHEN_B1C9C847_META_H
+#define SHEN_B1C9C847_META_H
+#define SHEN_B1_ORIG_W 1280
+#define SHEN_B1_ORIG_H 720
+#define SHEN_B1_EXPECT_SCALE 0.500000000f
+#define SHEN_B1_EXPECT_PAD_W 0
+#define SHEN_B1_EXPECT_PAD_H 140
+#define SHEN_B1_RAW_BYTES 2764800
+#define SHEN_B1_LB_BYTES 1228800
+#endif

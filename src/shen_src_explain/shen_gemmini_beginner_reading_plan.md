@@ -7,7 +7,7 @@
 
 ## 1. 先建立正确预期
 
-第一次读 Gemmini，不要把目标定成“读完每个 Scala 文件”。  
+第一次读 Gemmini，不要把目标定成"读完每个 Scala 文件"。  
 正确目标应该是：
 
 1. 知道 Gemmini 在 Chipyard 里怎么挂进去。
@@ -81,7 +81,17 @@ LoadController / StoreController
 
 ## 4. 10 天学习安排
 
-## Day 0（2026-03-13）：建立最小背景
+> **进度追踪**（最后更新：2026-03-23）
+>
+> | 阶段 | 状态 |
+> |------|------|
+> | Day 0–1 | ✅ 已完成 |
+> | Day 2 第一遍 | ✅ 已完成（找 `val xxx = Module(...)` 完毕） |
+> | Day 2 第二遍 | ✅ 已完成（模块间接口接线 → `shen_Controller_pass2_interface_wiring.md`） |
+> | Day 2 第三遍 | ✅ 已完成（追踪命令流 → `shen_Controller_pass3_command_trace.md`） |
+> | Day 3–10 | ⬜ 待开始 |
+
+## Day 0（2026-03-13 ✅）：建立最小背景
 
 ### 阅读文件
 
@@ -100,7 +110,7 @@ LoadController / StoreController
 
 - Gemmini 在系统里大概扮演什么角色？
 - 为什么它把 load / store / execute 分开？
-- 为什么 `Scratchpad` 不是普通“缓存”，而是专用片上存储？
+- 为什么 `Scratchpad` 不是普通"缓存"，而是专用片上存储？
 
 ### 今天不要做
 
@@ -110,7 +120,7 @@ LoadController / StoreController
 
 ---
 
-## Day 1（2026-03-14）：先看配置，理解“硬件长什么样”
+## Day 1（2026-03-14 ✅）：先看配置，理解"硬件长什么样"
 
 ### 阅读文件
 
@@ -128,17 +138,19 @@ LoadController / StoreController
 ### 读法建议
 
 - 第一遍只看 case class / config 组织方式。
-- 第二遍只标出“影响阵列规模”和“影响存储组织”的字段。
+- 第二遍只标出"影响阵列规模"和"影响存储组织"的字段。
 - 第三遍再看默认配置长什么样。
 
 ### 读完后你要能回答
 
-- Gemmini 的“外形”主要由哪类参数决定？
+- Gemmini 的"外形"主要由哪类参数决定？
 - SoC 在哪里实例化 Gemmini？
 
 ---
 
-## Day 2（2026-03-15）：先抓顶层，不要急着下钻
+## Day 2（2026-03-23，续）：先抓顶层，不要急着下钻
+
+> **当前进度**：第一遍（找 `val xxx = Module(...)`）已完成，今天继续第二、三遍。
 
 ### 阅读文件
 
@@ -146,7 +158,7 @@ LoadController / StoreController
 
 ### 阅读目标
 
-这一天的目标不是读懂全部逻辑，而是建立“顶层总装图”。
+这一天的目标不是读懂全部逻辑，而是建立"顶层总装图"。
 
 ### 重点只看
 
@@ -158,7 +170,7 @@ LoadController / StoreController
 
 ### 推荐读法
 
-- 第一遍：只找 `val xxx = Module(...)`
+- ~~第一遍：只找 `val xxx = Module(...)`~~ ✅ 已完成
 - 第二遍：只看模块之间的接口接线
 - 第三遍：只追一条命令从入口到三个 controller 的去向
 
@@ -168,7 +180,7 @@ LoadController / StoreController
 
 ---
 
-## Day 3（2026-03-16）：理解为什么需要 ReservationStation
+## Day 3（2026-03-24）：理解为什么需要 ReservationStation
 
 ### 阅读文件
 
@@ -195,11 +207,11 @@ LoadController / StoreController
 
 - 同一个 controller 内为什么默认按程序顺序收指令？
 - 不同 controller 之间为什么可能并行？
-- `ReservationStation` 到底在“调度什么”？
+- `ReservationStation` 到底在"调度什么"？
 
 ---
 
-## Day 4（2026-03-17）：先把 Scratchpad 看成总枢纽
+## Day 4（2026-03-25）：先把 Scratchpad 看成总枢纽
 
 ### 阅读文件
 
@@ -226,7 +238,7 @@ LoadController / StoreController
 
 ---
 
-## Day 5（2026-03-18）：把访存细节补上
+## Day 5（2026-03-26）：把访存细节补上
 
 ### 阅读文件
 
@@ -246,12 +258,12 @@ LoadController / StoreController
 
 ### 读完后你要能回答
 
-- Gemmini 为什么不能“想读多少就一次性读多少”？
+- Gemmini 为什么不能"想读多少就一次性读多少"？
 - `LocalAddr` 解决的是哪类问题？
 
 ---
 
-## Day 6（2026-03-19）：理解阵列入口，而不是先看最小 PE
+## Day 6（2026-03-27）：理解阵列入口，而不是先看最小 PE
 
 ### 阅读文件
 
@@ -275,7 +287,7 @@ LoadController / StoreController
 
 ---
 
-## Day 7（2026-03-20）：再下钻到 Mesh / Tile / PE
+## Day 7（2026-03-28）：再下钻到 Mesh / Tile / PE
 
 ### 阅读文件
 
@@ -296,7 +308,7 @@ LoadController / StoreController
 ### 这一天要特别避免的误区
 
 - 不要一开始就抠每个寄存器和控制位。
-- 不要把 `Tile` 和 `Mesh` 当成纯粹“容器”；它们承担了时序与组织职责。
+- 不要把 `Tile` 和 `Mesh` 当成纯粹"容器"；它们承担了时序与组织职责。
 - 不要脱离 WS/OS 数据流单独看 PE。
 
 ### 读完后你要能回答
@@ -306,7 +318,7 @@ LoadController / StoreController
 
 ---
 
-## Day 8（2026-03-21）：最后再补 ISA 和高级指令
+## Day 8（2026-03-29）：最后再补 ISA 和高级指令
 
 ### 阅读文件
 
@@ -321,7 +333,7 @@ LoadController / StoreController
 这时你要理解的是：
 
 1. ISA 只是软件和硬件之间的命令接口。
-2. `LoopMatmul` / `LoopConv` 不是“另一个 Gemmini”，而是高级命令展开器。
+2. `LoopMatmul` / `LoopConv` 不是"另一个 Gemmini"，而是高级命令展开器。
 3. 高级命令的价值是替软件自动做 tiling、unroll、双缓冲和重叠调度。
 
 ### 读完后你要能回答
@@ -331,7 +343,7 @@ LoadController / StoreController
 
 ---
 
-## Day 9（2026-03-22）：把测试和源码路径连起来
+## Day 9（2026-03-30）：把测试和源码路径连起来
 
 ### 阅读文件
 
@@ -348,7 +360,7 @@ mvin -> preload/compute -> mvout
 
 ### 这一天的目标
 
-把“文档里说的事”和“源码里接的线”对上。
+把"文档里说的事"和"源码里接的线"对上。
 
 ### 读完后你要能回答
 
@@ -357,7 +369,7 @@ mvin -> preload/compute -> mvout
 
 ---
 
-## Day 10（2026-03-23）：回看与输出
+## Day 10（2026-03-31）：回看与输出
 
 ### 这一天不新增阅读文件
 
@@ -387,7 +399,7 @@ mvin -> preload/compute -> mvout
 - `src/main/scala/gemmini/TilerController.scala`
 - `src/main/scala/gemmini/TilerFSM.scala`
 - `src/main/scala/gemmini/TilerScheduler.scala`
-- `RSNCPU/plan/shen_research_plan_2026-2027_v2.md`
+- `RSNCPU/plan/shen_research_plan_2026-2027_v2.md`（位于 Chipyard `generators/RSNCPU/`，与 `gemmini/` 同级）
 
 第一轮先绕开它们，能显著降低认知负担。
 
@@ -410,7 +422,7 @@ mvin -> preload/compute -> mvout
 
 ### 方法 1：只看模块职责，不先看代码细枝末节
 
-先回答“这个模块存在是为了解决什么问题”，再看它怎么写。
+先回答"这个模块存在是为了解决什么问题"，再看它怎么写。
 
 ### 方法 2：先画框图，再抠细节
 
@@ -450,4 +462,4 @@ mvin -> preload/compute -> mvout
 3. 然后只抓 `Configs -> Controller -> ReservationStation -> Scratchpad -> MeshWithDelays -> Mesh -> Tile -> PE`。
 4. 最后再补 `DMA / LocalAddr / ISA / LoopMatmul / LoopConv`。
 
-这条路线不是“最全”，但对初学者来说是**最快进入状态**的一条主线。
+这条路线不是"最全"，但对初学者来说是**最快进入状态**的一条主线。

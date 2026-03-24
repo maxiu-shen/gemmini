@@ -15,6 +15,14 @@ tests = \
 	shen_test_conv_implicit \
 	shen_test_conv_direct \
 	shen_test_conv_manual_2ch \
+	shen_test_yolov11n_letterbox \
+	shen_test_yolov11n_preprocess_int8 \
+	shen_test_yolov11n_ops \
+	shen_test_yolov11n_conv_layers \
+	shen_test_golden_preprocess \
+	shen_test_golden_conv \
+	shen_test_yolov11n_backbone \
+	shen_test_yolov11n_backbone_p5 \
 	mvin_mvout \
 	mvin_mvout_zeros \
 	mvin_mvout_stride \
