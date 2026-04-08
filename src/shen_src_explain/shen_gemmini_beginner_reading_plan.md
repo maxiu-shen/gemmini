@@ -81,23 +81,26 @@ LoadController / StoreController
 
 ## 4. 10 天学习安排
 
-> **进度追踪**（最后更新：2026-03-23）
+> **进度追踪**（最后更新：2026-03-25）
 >
-> | 阶段 | 状态 |
-> |------|------|
-> | Day 0–1 | ✅ 已完成 |
-> | Day 2 第一遍 | ✅ 已完成（找 `val xxx = Module(...)` 完毕） |
-> | Day 2 第二遍 | ✅ 已完成（模块间接口接线 → `shen_Controller_pass2_interface_wiring.md`） |
-> | Day 2 第三遍 | ✅ 已完成（追踪命令流 → `shen_Controller_pass3_command_trace.md`） |
-> | Day 3–10 | ⬜ 待开始 |
+> | 阶段 | 状态 | 笔记文件 |
+> |------|------|---------|
+> | Day 0 | ✅ 已完成 | `shen_day0_chisel_scala_basics.md`、`shen_day0_module_hierarchy.md` |
+> | Day 1 | ✅ 已完成 | `shen_day1_GemminiConfigs.md`、`shen_day1_Configs.md` |
+> | Day 2 pass1 | ✅ 已完成 | `shen_day2_pass1_module_instances.md` |
+> | Day 2 pass2 | ✅ 已完成 | `shen_day2_pass2_interface_wiring.md` |
+> | Day 2 pass3 | ✅ 已完成 | `shen_day2_pass3_command_trace.md` |
+> | Day 2 补充 | ✅ 已完成 | `shen_day2_ex_spad_acc_connections.md` |
+> | Day 3 | ✅ 已完成 | `shen_day3_RS_and_Controllers.md` |
+> | Day 4–10 | ⬜ 待开始 | |
 
 ## Day 0（2026-03-13 ✅）：建立最小背景
 
 ### 阅读文件
 
 - `README.md`
-- `src/shen_src_explain/shen_chisel_scala_basics.md`
-- `src/shen_src_explain/shen_gemmini_module_hierarchy.md`
+- `src/shen_src_explain/shen_day0_chisel_scala_basics.md`
+- `src/shen_src_explain/shen_day0_module_hierarchy.md`
 
 ### 这一天只做 4 件事
 
@@ -246,7 +249,7 @@ LoadController / StoreController
 - `src/main/scala/gemmini/LocalAddr.scala`
 - `src/main/scala/gemmini/DMACommandTracker.scala`
 - `src/main/scala/gemmini/XactTracker.scala`
-- `src/shen_src_explain/shen_LocalAddr_scala_explain.md`
+- `src/shen_src_explain/shen_day5_LocalAddr.md`
 
 ### 阅读目标
 
@@ -294,8 +297,8 @@ LoadController / StoreController
 - `src/main/scala/gemmini/Mesh.scala`
 - `src/main/scala/gemmini/Tile.scala`
 - `src/main/scala/gemmini/PE.scala`
-- `src/shen_src_explain/shen_Tile_Mesh_scala_explain.md`
-- `src/shen_src_explain/shen_PE_scala_explain.md`
+- `src/shen_src_explain/shen_day7_Tile_Mesh.md`
+- `src/shen_src_explain/shen_day7_PE.md`
 
 ### 阅读目标
 
@@ -458,7 +461,7 @@ mvin -> preload/compute -> mvout
 如果你现在还是 Gemmini 小白，请按下面这个最短路径开始：
 
 1. 先读 `README.md` 的架构部分。
-2. 再读 `src/shen_src_explain/shen_gemmini_module_hierarchy.md`。
+2. 再读 `src/shen_src_explain/shen_day0_module_hierarchy.md`。
 3. 然后只抓 `Configs -> Controller -> ReservationStation -> Scratchpad -> MeshWithDelays -> Mesh -> Tile -> PE`。
 4. 最后再补 `DMA / LocalAddr / ISA / LoopMatmul / LoopConv`。
 

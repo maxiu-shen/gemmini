@@ -48,9 +48,11 @@ static int shen_compare_u8(const char *name,
     if (diff == 0) exact++;
     if (diff <= tolerance) within++;
   }
-  printf("  [%s] max_diff=%d  exact=%d/%d (%d%%)  within_%d=%d/%d (%d%%)\n",
-         name, max_diff, exact, size, exact * 100 / size,
-         tolerance, within, size, within * 100 / size);
+  printf("  [%s] max_diff=%d  exact=%d/%d (%d.%d%%)  within_%d=%d/%d (%d.%d%%)\n",
+         name, max_diff, exact, size,
+         exact * 1000 / size / 10, (exact * 1000 / size) % 10,
+         tolerance, within, size,
+         within * 1000 / size / 10, (within * 1000 / size) % 10);
   if (first_fail_idx >= 0)
     printf("    first exceed @%d: actual=%d golden=%d\n",
            first_fail_idx, actual[first_fail_idx], golden[first_fail_idx]);
@@ -77,9 +79,11 @@ static int shen_compare_i8(const char *name,
     if (diff == 0) exact++;
     if (diff <= tolerance) within++;
   }
-  printf("  [%s] max_diff=%d  exact=%d/%d (%d%%)  within_%d=%d/%d (%d%%)\n",
-         name, max_diff, exact, size, exact * 100 / size,
-         tolerance, within, size, within * 100 / size);
+  printf("  [%s] max_diff=%d  exact=%d/%d (%d.%d%%)  within_%d=%d/%d (%d.%d%%)\n",
+         name, max_diff, exact, size,
+         exact * 1000 / size / 10, (exact * 1000 / size) % 10,
+         tolerance, within, size,
+         within * 1000 / size / 10, (within * 1000 / size) % 10);
   if (first_fail_idx >= 0)
     printf("    first exceed @%d: actual=%d golden=%d\n",
            first_fail_idx, actual[first_fail_idx], golden[first_fail_idx]);

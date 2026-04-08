@@ -23,6 +23,7 @@ tests = \
 	shen_test_golden_conv \
 	shen_test_yolov11n_backbone \
 	shen_test_yolov11n_backbone_p5 \
+	shen_test_maxpool \
 	mvin_mvout \
 	mvin_mvout_zeros \
 	mvin_mvout_stride \
@@ -120,6 +121,8 @@ CFLAGS := $(CFLAGS) \
 	-I$(abs_top_srcdir)/riscv-tests/env \
 	-I$(abs_top_srcdir) \
 	-I$(BENCH_COMMON) \
+	-I$(abs_top_srcdir)/../../../yolo_v11/exports/golden \
+	-I$(abs_top_srcdir)/../../../yolo_v11/exports/params \
 	-DID_STRING=$(ID_STRING) \
 	-DPRINT_TILE=0 \
 

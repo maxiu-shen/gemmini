@@ -71,13 +71,14 @@ static int shen_compare_golden(const char *name,
     if (diff <= 5) w5++;
     if (diff <= 10) w10++;
   }
+  /* 用 ×1000 整数除法得到一位小数，避免浮点 */
   int pct5 = w5 * 100 / size;
-  printf("  [%s] max=%d  exact=%d%%  <=2:%d%%  <=5:%d%%  <=10:%d%%\n",
+  printf("  [%s] max=%d  exact=%d.%d%%  <=2:%d.%d%%  <=5:%d.%d%%  <=10:%d.%d%%\n",
          name, max_diff,
-         exact * 100 / size,
-         w2 * 100 / size,
-         pct5,
-         w10 * 100 / size);
+         exact * 1000 / size / 10, (exact * 1000 / size) % 10,
+         w2 * 1000 / size / 10, (w2 * 1000 / size) % 10,
+         w5 * 1000 / size / 10, (w5 * 1000 / size) % 10,
+         w10 * 1000 / size / 10, (w10 * 1000 / size) % 10);
   *max_diff_out = max_diff;
   return pct5;
 }

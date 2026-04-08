@@ -88,8 +88,11 @@ static int shen_compare_golden(const char *name,
     if (d <= 5) w5++;
     if (d <= 10) w10++;
   }
-  printf("  [%s] max=%d  exact=%d%%  <=5:%d%%  <=10:%d%%\n",
-         name, md, ex*100/size, w5*100/size, w10*100/size);
+  printf("  [%s] max=%d  exact=%d.%d%%  <=5:%d.%d%%  <=10:%d.%d%%\n",
+         name, md,
+         ex*1000/size/10, (ex*1000/size)%10,
+         w5*1000/size/10, (w5*1000/size)%10,
+         w10*1000/size/10, (w10*1000/size)%10);
   *md_out = md;
   return w5 * 100 / size;
 }
